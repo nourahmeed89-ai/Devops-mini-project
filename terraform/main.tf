@@ -1,4 +1,8 @@
 terraform {
+  backend "local" {
+    path = "/var/lib/jenkins/terraform-state/devops-mini-project.tfstate"
+  }
+
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
