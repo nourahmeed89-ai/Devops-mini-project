@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'devops-mini-project:v1'
         KUBECONFIG = '/var/lib/jenkins/.kube/config'
+        TF_IN_AUTOMATION = 'true'
     }
 
     stages {
@@ -33,10 +34,35 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Terraform Init') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yml'
-                sh 'kubectl apply -f k8s/service.yml'
+                dir('terraform') {
+                    sh 'terraform init -input=false'
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform plan -input=false -out=tfplan'
+                }
+            }
+        }
+
+        stage('Deploy with Terraform') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform apply -input=false tfplan'
+                }
             }
         }
 

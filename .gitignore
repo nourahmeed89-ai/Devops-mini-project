@@ -9,3 +9,10 @@ __pycache__/
 
 # IDE
 .vscode/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/tfplan
+terraform/crash.log
